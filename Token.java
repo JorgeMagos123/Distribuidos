@@ -13,7 +13,7 @@ class Token{
   static boolean primera_vez = true;
   static String ip;
   static int nodo;
-  static long token;
+  static int token;
   static int contador=0;
   
 
