@@ -2,7 +2,7 @@ import java.rmi.Naming;
 
 public class ClienteRMI {
 
-  private static final int N = ClaseRMI.N;
+  static final int N =8;
 
   static float[][] separa_matriz(float[][] A, int inicio) {
     float[][] M = new float[N / 2][N];
