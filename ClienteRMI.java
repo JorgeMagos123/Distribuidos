@@ -15,8 +15,8 @@ public class ClienteRMI {
         // en este caso el objeto remoto se llama "matrices", notar que se utiliza el puerto default 1099
         // se usa la dirección ip privada de cada nodo en el que se ejecuta un servidor en lugar de  "localhost"
         // en el primer caso, si se utiliza localhost puesto que será el nodo 0
-        String url1 = "rmi://10.1.0.4/multmatriz";
-        String url2 = "rmi://10.2.0.4/multmatriz";
+        String url1 = "rmi://10.4.0.4/multmatriz";
+        String url2 = "rmi://10.5.0.4/multmatriz";
         
         // Inicializando las matrices
         for (int i = 0; i < N; i++){
