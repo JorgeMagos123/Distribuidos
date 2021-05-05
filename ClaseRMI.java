@@ -8,7 +8,7 @@ public class ClaseRMI extends UnicastRemoteObject implements InterfaceRMI
     super( );
   }
 
-public float[][] multiplica_matrices(float[][] A,float[][] B,int N) throws RemoteException
+public float[][] multiplica_matrices(float[][] A,float[][] B) throws RemoteException
 {
   float[][] C = new float[N/2][N/2];
   for (int i = 0; i < N/2; i++)
