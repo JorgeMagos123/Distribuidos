@@ -65,10 +65,10 @@ public class ClienteRMI {
     InterfaceRMI nodo1 = (InterfaceRMI) Naming.lookup("rmi://localhost/matrices");
     InterfaceRMI nodo2 = (InterfaceRMI) Naming.lookup("rmi://localhost/matrices");
 
-    float[][] C1 = nodo1.multiplica_matrices(A1, B1);
-    float[][] C2 = nodo1.multiplica_matrices(A1, B2);
-    float[][] C3 = nodo2.multiplica_matrices(A2, B1);
-    float[][] C4 = nodo2.multiplica_matrices(A2, B2);
+    float[][] C1 = nodo1.multiplica_matrices(A1, B1, N);
+    float[][] C2 = nodo1.multiplica_matrices(A1, B2, N);
+    float[][] C3 = nodo2.multiplica_matrices(A2, B1, N);
+    float[][] C4 = nodo2.multiplica_matrices(A2, B2, N);
 
     acomoda_matriz(C, C1, 0, 0);
     acomoda_matriz(C, C2, 0, N / 2);
