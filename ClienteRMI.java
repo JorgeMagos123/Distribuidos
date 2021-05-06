@@ -1,88 +1,85 @@
 import java.rmi.Naming;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
-public class ClienteRMI {
+public class ClienteRMI{
+	public static void main(String[] args) throws Exception{
+		String url = "rmi://10.4.0.4/matrices";
+		String url2 ="rmi://10.5.0.4/matrices";
 
-  private static final int N = ClaseRMI.N;
+		InterfaceRMI r = (InterfaceRMI)Naming.lookup(url);
+		InterfaceRMI r2 = (InterfaceRMI)Naming.lookup(url2);
 
-  static float[][] separa_matriz(float[][] A, int inicio) {
-    float[][] M = new float[N / 2][N];
-    for (int i = 0; i < N / 2; i++)
-      for (int j = 0; j < N; j++)
-        M[i][j] = A[i + inicio][j];
-    return M;
-  }
+		BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
 
-  static void acomoda_matriz(float[][] C, float[][] A, int renglon, int columna) {
-    for (int i = 0; i < N / 2; i++)
-      for (int j = 0; j < N / 2; j++)
-        C[i + renglon][j + columna] = A[i][j];
-  }
+		System.out.print("Valor de N:");
+		int n = Integer.parseInt(entrada.readLine());
+		double checksum = 0;
 
-  static void imprimeMatriz(float matriz[][], int renglon, int columna) {
-    for (int i = 0; i < renglon; i++) {
-      for (int j = 0; j < columna; j++) {
-        System.out.printf("%8.1f", matriz[i][j]);
-      }
-      System.out.println("");
-    }
-  }
+		float[][] a = new float[n][n];
+		float[][] b = new float[n][n];
 
-  public static void main(String args[]) throws Exception {
-    float[][] A = new float[N][N];
-    float[][] B = new float[N][N];
-    float[][] C = new float[N][N];
-    double checksum = 0;
+		for (int i=0;i<n;i++) {
+			for (int j=0;j<n;j++) {
+				a[i][j] = i-3*j;
+				b[i][j] = i+3*j;
+			}
+		}
 
-    for (int i = 0; i < N; i++) {
-      for (int j = 0; j < N; j++) {
-        A[i][j] = 2 * i - j;
-        B[i][j] = 2 * i + j;
-        C[i][j] = 0;
-      }
-    }
+		for (int i=0;i<n;i++) {
+			for (int j=0;j<n;j++) {
+				float x = b[i][j];
+				b[i][j] = b[j][i];
+				b[j][i] = x;
+			}
+		}
 
-    System.out.println("Matriz A:");
-    imprimeMatriz(A, N, N);
-    System.out.println("Matriz B:");
-    imprimeMatriz(B, N, N);
+		float[][] a1 = r.separa_matriz(a,0,n);
+		float[][] a2 = r.separa_matriz(a,n/2,n);
+		float[][] b1 = r2.separa_matriz(b,0,n);
+		float[][] b2 = r2.separa_matriz(b,n/2,n);
 
-    for (int i = 0; i < N; i++) {
-      for (int j = 0; j < i; j++) {
-        float x = B[i][j];
-        B[i][j] = B[j][i];
-        B[j][i] = x;
-      }
-    }
+		float[][] c1 = r.multiplica_matrices(a1,b1,n);
+		float[][] c2 = r.multiplica_matrices(a1,b2,n);
+		float[][] c3 = r2.multiplica_matrices(a2,b1,n);
+		float[][] c4 = r2.multiplica_matrices(a2,b2,n);
 
-    System.out.println("Matriz B^T:");
-    imprimeMatriz(B, N, N);
+		float[][] c = new float[n][n];
+		c = r.acomoda_matriz(c,c1,0,0,n);
+		c = r.acomoda_matriz(c,c2,0,n/2,n);
+		c = r2.acomoda_matriz(c,c3,n/2,0,n);
+		c = r2.acomoda_matriz(c,c4,n/2,n/2,n);
 
-    float[][] A1 = separa_matriz(A, 0);
-    float[][] A2 = separa_matriz(A, N / 2);
-    float[][] B1 = separa_matriz(B, 0);
-    float[][] B2 = separa_matriz(B, N / 2);
+		if (n == 8) {
+			System.out.println("Matriz A");
+			for (int i=0;i<n;i++){
+				for (int j=0;j<n;j++){
+					System.out.print(a[i][j] + "\t");
+				}
+				System.out.println();
+			}
 
-    InterfaceRMI nodo1 = (InterfaceRMI) Naming.lookup("rmi://localhost/matrices");
-    InterfaceRMI nodo2 = (InterfaceRMI) Naming.lookup("rmi://localhost/matrices");
+			System.out.println("Matriz B");
+			for (int i=0;i<n;i++){
+				for (int j=0;j<n;j++){
+					System.out.print(b[i][j] + "\t");
+				}
+				System.out.println();
+			}
 
-    float[][] C1 = nodo1.multiplica_matrices(A1, B1);
-    float[][] C2 = nodo1.multiplica_matrices(A1, B2);
-    float[][] C3 = nodo2.multiplica_matrices(A2, B1);
-    float[][] C4 = nodo2.multiplica_matrices(A2, B2);
+			System.out.println("Matriz C");
+			for (int i=0;i<n;i++){
+				for (int j=0;j<n;j++){
+					System.out.print(c[i][j] + "\t");
+				}
+				System.out.println();
+			}
+		}
 
-    acomoda_matriz(C, C1, 0, 0);
-    acomoda_matriz(C, C2, 0, N / 2);
-    acomoda_matriz(C, C3, N / 2, 0);
-    acomoda_matriz(C, C4, N / 2, N / 2);
+		for (int i=0;i<n;i++)
+				for (int j=0;j<n;j++)
+					checksum += (double)c[i][j];
 
-    System.out.println("Matriz C:");
-    imprimeMatriz(C, N, N);
-
-    for (int i = 0; i < N; i++) {
-      for (int j = 0; j < N; j++) {
-        checksum += C[i][j];
-      }
-    }
-    System.out.println("Checksum de C: " + checksum);
-  }
+		System.out.println("Checksum: " + checksum);
+	}
 }
