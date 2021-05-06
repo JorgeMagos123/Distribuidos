@@ -65,11 +65,11 @@ public class ClienteRMI {
 	String url2 = "rmi://10.5.0.4/matrices";
 	    // obtiene una referencia que "apunta" al objeto remoto asociado a la URL
     InterfaceRMI r = (InterfaceRMI)Naming.lookup(url);
-	InterfaceRMI r2 = (InterfaceRMI)Naming.lookup(url2);
-    float[][] C1 = nodo1.multiplica_matrices(A1, B1);
-    float[][] C2 = nodo1.multiplica_matrices(A1, B2);
-    float[][] C3 = nodo2.multiplica_matrices(A2, B1);
-    float[][] C4 = nodo2.multiplica_matrices(A2, B2);
+InterfaceRMI r2 = (InterfaceRMI)Naming.lookup(url2);
+   float[][] C1 = r1.multiplica_matrices(A1, B1);
+    float[][] C2 = r1.multiplica_matrices(A1, B2);
+    float[][] C3 = r2.multiplica_matrices(A2, B1);
+    float[][] C4 = r2.multiplica_matrices(A2, B2);
 
     acomoda_matriz(C, C1, 0, 0);
     acomoda_matriz(C, C2, 0, N / 2);
